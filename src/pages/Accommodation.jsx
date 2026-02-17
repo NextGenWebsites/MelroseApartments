@@ -17,6 +17,9 @@ import img3378 from '../assets/images/indoor-images/IMG_3378.webp';
 import img3379 from '../assets/images/indoor-images/IMG_3379.webp';
 import img3380 from '../assets/images/indoor-images/IMG_3380.webp';
 import img3381 from '../assets/images/indoor-images/IMG_3381.webp';
+import img5098 from '../assets/images/indoor-images/IMG_5098.webp';
+import img5102 from '../assets/images/indoor-images/IMG_5102.webp';
+import img5107 from '../assets/images/indoor-images/IMG_5107.webp';
 import room23Bed from '../assets/images/indoor-images/Room 23 Bed copy.webp';
 import room23 from '../assets/images/indoor-images/Room 23 copy.webp';
 // import room23Ensuite from '../assets/images/indoor-images/Room 23 Ensuite copy_converted.webp';
@@ -182,6 +185,21 @@ const Accommodation = () => {
       src: img3381, 
       alt: 'Melrose Apartments North Melbourne - Modern studio apartment with all amenities included',
       title: 'Melrose Apartments North Melbourne'
+    },
+    { 
+      src: img5098, 
+      alt: 'Melrose Apartments Interior View - Modern studio apartment accommodation in North Melbourne',
+      title: 'Melrose Apartments Interior View'
+    },
+    { 
+      src: img5102, 
+      alt: 'North Melbourne Studio Apartment - Well-appointed accommodation with modern furnishings and amenities',
+      title: 'North Melbourne Studio Apartment'
+    },
+    { 
+      src: img5107, 
+      alt: 'Melrose Apartments Accommodation - Comfortable studio apartment with fully equipped kitchen and living space',
+      title: 'Melrose Apartments Accommodation'
     },
   ], []);
 
