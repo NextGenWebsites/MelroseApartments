@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Check, X as CloseIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Check, X as CloseIcon, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import CTAButton from '../components/CTAButton';
 
 // Import all indoor images
@@ -36,6 +36,15 @@ import room34_5 from '../assets/images/indoor-images/Room34-5_converted.webp';
 const Accommodation = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState({ 1: 0, 2: 0 });
   const [videoErrors, setVideoErrors] = useState({ 1: false, 2: false });
+  const [isPlaying, setIsPlaying] = useState({ 1: false, 2: false });
+  const [isVideoLoaded, setIsVideoLoaded] = useState({ 1: false, 2: false });
+  const videoRefs = useRef({ 1: null, 2: null });
+
+  // Video paths from public folder - MP4 format for better browser support
+  const videoPaths = {
+    studio: '/videos/IMG_3392.mp4',
+    interconnecting: '/videos/IMG_5110.mp4'
+  };
 
   // All gallery images with SEO-optimized alt text
   const galleryImages = useMemo(() => [
@@ -309,6 +318,51 @@ const Accommodation = () => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedImage, closeLightbox, nextImage, prevImage]);
+
+  // Intersection Observer for auto-play videos when in view (TikTok-style)
+  useEffect(() => {
+    const observers = {};
+    
+    [1, 2].forEach((videoId) => {
+      const videoElement = videoRefs.current[videoId];
+      if (!videoElement) return;
+      
+      observers[videoId] = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const video = videoRefs.current[videoId];
+            if (!video || videoErrors[videoId]) return;
+            
+            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+              // Video is in view - play it
+              if (!isPlaying[videoId] && isVideoLoaded[videoId]) {
+                video.play().catch((err) => {
+                  console.log('Auto-play prevented:', err);
+                });
+              }
+            } else {
+              // Video is out of view - pause it
+              if (isPlaying[videoId]) {
+                video.pause();
+              }
+            }
+          });
+        },
+        {
+          threshold: 0.5, // Trigger when 50% of video is visible
+          rootMargin: '0px',
+        }
+      );
+      
+      observers[videoId]?.observe(videoElement);
+    });
+
+    return () => {
+      Object.values(observers).forEach((observer) => {
+        if (observer) observer.disconnect();
+      });
+    };
+  }, [isPlaying, isVideoLoaded, videoErrors]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -601,8 +655,8 @@ const Accommodation = () => {
         </div>
       </section>
 
-      {/* Video Tour Section */}
-      <section className="py-20 bg-white mx-5 md:mx-0">
+      {/* Video Tour Section - TikTok Reel Style */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white mx-5 md:mx-0">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -614,11 +668,14 @@ const Accommodation = () => {
               damping: 20,
               mass: 0.8
             }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl text-[#36b3a8] mb-4">
-              come take a tour of our rooms
+              Take a Tour of Our Rooms
             </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Experience our accommodation through immersive video tours
+            </p>
           </motion.div>
 
           <motion.div
@@ -626,90 +683,228 @@ const Accommodation = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto"
           >
-            {/* Video 1 */}
+            {/* Studio Apartment Video */}
             <motion.div
               variants={itemVariants}
-              className="relative w-full rounded-lg overflow-hidden shadow-xl bg-gray-900 aspect-video"
+              className="relative w-full mx-auto"
+              style={{ maxWidth: '400px' }}
             >
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
-                preload="auto"
-                onError={(e) => {
-                  console.error('Video 1 error:', e);
-                  setVideoErrors(prev => ({ ...prev, 1: true }));
-                }}
-                onLoadedData={() => {
-                  setVideoErrors(prev => ({ ...prev, 1: false }));
-                }}
-                aria-label="Room tour video 1 - Studio apartment accommodation at Melrose Apartments North Melbourne"
-              >
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-                <source src="/videos/demo-video-1.mp4" type="video/mp4" />
-                <source src="/videos/demo-video-1.webm" type="video/webm" />
-              </video>
-              {videoErrors[1] && (
-                <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white text-center p-8 pointer-events-none">
-                  <div>
-                    <div className="mb-4">
-                      <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-900 video-container" style={{ aspectRatio: '9/16', minHeight: '500px' }}>
+                <video
+                  ref={(el) => {
+                    videoRefs.current[1] = el;
+                  }}
+                  className="w-full h-full object-cover"
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  style={{ 
+                    display: videoErrors[1] ? 'none' : 'block',
+                    willChange: 'auto',
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden'
+                  }}
+                  onLoadedMetadata={() => {
+                    setIsVideoLoaded(prev => ({ ...prev, 1: true }));
+                    setVideoErrors(prev => ({ ...prev, 1: false }));
+                  }}
+                  onCanPlay={() => {
+                    setIsVideoLoaded(prev => ({ ...prev, 1: true }));
+                  }}
+                  onError={(e) => {
+                    const video = e.target;
+                    const error = video.error;
+                    console.error('Video 1 error:', {
+                      code: error?.code,
+                      message: error?.message,
+                      videoSrc: video.src
+                    });
+                    setVideoErrors(prev => ({ ...prev, 1: true }));
+                  }}
+                  onPlay={() => setIsPlaying(prev => ({ ...prev, 1: true }))}
+                  onPause={() => setIsPlaying(prev => ({ ...prev, 1: false }))}
+                  aria-label="Studio apartment video tour - Melrose Apartments North Melbourne"
+                >
+                  <source src={videoPaths.studio} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                {/* Loading State */}
+                {!isVideoLoaded[1] && !videoErrors[1] && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-10">
+                    <div className="text-center text-white">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                      <p className="text-sm">Loading video...</p>
                     </div>
-                    <p className="text-lg font-semibold mb-2">Demo Video 1</p>
-                    <p className="text-sm text-gray-400">Room tour video will appear here</p>
                   </div>
+                )}
+
+                {/* Error Fallback */}
+                {videoErrors[1] && (
+                  <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white text-center p-8 z-20">
+                    <div>
+                      <div className="mb-4">
+                        <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <p className="text-lg font-semibold mb-2">Studio Apartment</p>
+                      <p className="text-sm text-gray-400">Unable to load video. Please try refreshing the page.</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Play/Pause Overlay Button */}
+                {isVideoLoaded[1] && !videoErrors[1] && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: isPlaying[1] ? 0 : 1, scale: isPlaying[1] ? 0.8 : 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (videoRefs.current[1]) {
+                        if (isPlaying[1]) {
+                          videoRefs.current[1].pause();
+                        } else {
+                          videoRefs.current[1].play().catch(err => console.log('Play error:', err));
+                        }
+                      }
+                    }}
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors duration-300 z-10 cursor-pointer"
+                    aria-label={isPlaying[1] ? "Pause video" : "Play video"}
+                  >
+                    <div className="bg-white/90 rounded-full p-4 shadow-lg">
+                      {isPlaying[1] ? (
+                        <Pause className="w-8 h-8 text-gray-900" fill="currentColor" />
+                      ) : (
+                        <Play className="w-8 h-8 text-gray-900 ml-1" fill="currentColor" />
+                      )}
+                    </div>
+                  </motion.button>
+                )}
+
+                {/* Video Label */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 z-10 pointer-events-none">
+                  <h3 className="text-white text-xl font-semibold mb-1">Studio Apartment</h3>
+                  <p className="text-white/90 text-sm">Perfect for 1-2 guests</p>
                 </div>
-              )}
+              </div>
             </motion.div>
 
-            {/* Video 2 */}
+            {/* Interconnecting Apartment Video */}
             <motion.div
               variants={itemVariants}
-              className="relative w-full rounded-lg overflow-hidden shadow-xl bg-gray-900 aspect-video"
+              className="relative w-full mx-auto"
+              style={{ maxWidth: '400px' }}
             >
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
-                preload="auto"
-                onError={(e) => {
-                  console.error('Video 2 error:', e);
-                  setVideoErrors(prev => ({ ...prev, 2: true }));
-                }}
-                onLoadedData={() => {
-                  setVideoErrors(prev => ({ ...prev, 2: false }));
-                }}
-                aria-label="Room tour video 2 - Interconnecting apartment accommodation at Melrose Apartments North Melbourne"
-              >
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
-                <source src="/videos/demo-video-2.mp4" type="video/mp4" />
-                <source src="/videos/demo-video-2.webm" type="video/webm" />
-              </video>
-              {videoErrors[2] && (
-                <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white text-center p-8 pointer-events-none">
-                  <div>
-                    <div className="mb-4">
-                      <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-900 video-container" style={{ aspectRatio: '9/16', minHeight: '500px' }}>
+                <video
+                  ref={(el) => {
+                    videoRefs.current[2] = el;
+                  }}
+                  className="w-full h-full object-cover"
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  style={{ 
+                    display: videoErrors[2] ? 'none' : 'block',
+                    willChange: 'auto',
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden'
+                  }}
+                  onLoadedMetadata={() => {
+                    setIsVideoLoaded(prev => ({ ...prev, 2: true }));
+                    setVideoErrors(prev => ({ ...prev, 2: false }));
+                  }}
+                  onCanPlay={() => {
+                    setIsVideoLoaded(prev => ({ ...prev, 2: true }));
+                  }}
+                  onError={(e) => {
+                    const video = e.target;
+                    const error = video.error;
+                    console.error('Video 2 error:', {
+                      code: error?.code,
+                      message: error?.message,
+                      videoSrc: video.src
+                    });
+                    setVideoErrors(prev => ({ ...prev, 2: true }));
+                  }}
+                  onPlay={() => setIsPlaying(prev => ({ ...prev, 2: true }))}
+                  onPause={() => setIsPlaying(prev => ({ ...prev, 2: false }))}
+                  aria-label="Interconnecting apartment video tour - Melrose Apartments North Melbourne"
+                >
+                  <source src={videoPaths.interconnecting} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                {/* Loading State */}
+                {!isVideoLoaded[2] && !videoErrors[2] && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-gray-900 z-10">
+                    <div className="text-center text-white">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                      <p className="text-sm">Loading video...</p>
                     </div>
-                    <p className="text-lg font-semibold mb-2">Demo Video 2</p>
-                    <p className="text-sm text-gray-400">Room tour video will appear here</p>
                   </div>
+                )}
+
+                {/* Error Fallback */}
+                {videoErrors[2] && (
+                  <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white text-center p-8 z-20">
+                    <div>
+                      <div className="mb-4">
+                        <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <p className="text-lg font-semibold mb-2">Interconnecting Apartment</p>
+                      <p className="text-sm text-gray-400">Unable to load video. Please try refreshing the page.</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Play/Pause Overlay Button */}
+                {isVideoLoaded[2] && !videoErrors[2] && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: isPlaying[2] ? 0 : 1, scale: isPlaying[2] ? 0.8 : 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (videoRefs.current[2]) {
+                        if (isPlaying[2]) {
+                          videoRefs.current[2].pause();
+                        } else {
+                          videoRefs.current[2].play().catch(err => console.log('Play error:', err));
+                        }
+                      }
+                    }}
+                    className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors duration-300 z-10 cursor-pointer"
+                    aria-label={isPlaying[2] ? "Pause video" : "Play video"}
+                  >
+                    <div className="bg-white/90 rounded-full p-4 shadow-lg">
+                      {isPlaying[2] ? (
+                        <Pause className="w-8 h-8 text-gray-900" fill="currentColor" />
+                      ) : (
+                        <Play className="w-8 h-8 text-gray-900 ml-1" fill="currentColor" />
+                      )}
+                    </div>
+                  </motion.button>
+                )}
+
+                {/* Video Label */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 z-10 pointer-events-none">
+                  <h3 className="text-white text-xl font-semibold mb-1">Interconnecting Apartment</h3>
+                  <p className="text-white/90 text-sm">Perfect for 3-4 guests</p>
                 </div>
-              )}
+              </div>
             </motion.div>
           </motion.div>
         </div>

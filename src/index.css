@@ -147,3 +147,23 @@ img {
 .lazy-load.loaded {
   opacity: 1;
 }
+
+/* Video Performance Optimizations */
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  /* Hardware acceleration for smooth playback */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+}
+
+/* Smooth video container transitions */
+.video-container {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
