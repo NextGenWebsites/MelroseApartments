@@ -6,9 +6,9 @@ import CTAButton from '../components/CTAButton';
 import GoogleReviews from '../components/GoogleReviews';
 
 // Import all images from homepage-iamges folder
-import img1 from '../assets/images/homepage-iamges/img1.webp';
-import img2 from '../assets/images/homepage-iamges/img2.webp';
-import img3 from '../assets/images/homepage-iamges/img3.webp';
+import img1 from '../assets/images/homepage-iamges/img1.jpg';
+import img2 from '../assets/images/homepage-iamges/img2.jpg';
+import img3 from '../assets/images/homepage-iamges/img3.jpg';
 
 const Home = () => {
   // All images array
