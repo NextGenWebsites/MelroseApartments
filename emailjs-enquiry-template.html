@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enquiry Form Submission</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+    <!-- Header -->
+    <div style="background-color: #36b3a8; color: #ffffff; padding: 30px 20px; text-align: center;">
+      <h1 style="margin: 0; font-size: 28px; font-weight: bold;">New Enquiry from Website</h1>
+      <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Melrose Apartments</p>
+    </div>
+    
+    <!-- Content -->
+    <div style="padding: 30px 20px; background-color: #f9f9f9;">
+      <!-- Form Type -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Form Type</div>
+        <div style="padding: 12px 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px; color: #333333;">{{form_type}}</div>
+      </div>
+      
+      <!-- Date & Time -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Date & Time</div>
+        <div style="padding: 12px 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px; color: #333333;">{{date}}</div>
+      </div>
+      
+      <!-- Name -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Name</div>
+        <div style="padding: 12px 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px; color: #333333;">{{from_name}}</div>
+      </div>
+      
+      <!-- Email -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Email</div>
+        <div style="padding: 12px 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px;">
+          <a href="mailto:{{from_email}}" style="color: #36b3a8; text-decoration: none;">{{from_email}}</a>
+        </div>
+      </div>
+      
+      <!-- Phone -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phone</div>
+        <div style="padding: 12px 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px; color: #333333;">{{phone}}</div>
+      </div>
+      
+      <!-- Subject -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Subject</div>
+        <div style="padding: 12px 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px; color: #333333;">{{subject}}</div>
+      </div>
+      
+      <!-- Enquiry Message -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-weight: bold; color: #36b3a8; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Enquiry Message</div>
+        <div style="padding: 15px; background-color: #ffffff; border-left: 4px solid #36b3a8; font-size: 16px; color: #333333; white-space: pre-wrap; line-height: 1.6;">{{message}}</div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <div style="background-color: #f0f0f0; padding: 20px; text-align: center; border-top: 1px solid #dddddd;">
+      <p style="margin: 0 0 10px 0; font-size: 12px; color: #666666;">This email was sent from the Melrose Apartments enquiry form.</p>
+      <p style="margin: 0; font-size: 12px; color: #666666;">
+        Reply directly to this email to respond to: 
+        <a href="mailto:{{reply_to}}" style="color: #36b3a8; text-decoration: none;">{{reply_to}}</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+

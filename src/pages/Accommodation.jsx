@@ -246,11 +246,11 @@ const Accommodation = () => {
       ],
       size: 'Two connecting studios',
       capacity: '3-4 guests',
-      images: [room33_1, room33_2, room33_3, room33_4, room33_5, room33_6, room34_1, room34_2, room34_3, room34_4, room34_5],
+      images: [room33_1, room33_2, room33_3, room33_4, room33_5, room33_6, room34_1, room34_2, room34_3, room34_4, room34_5, img5098, img5102, img5107],
     },
   ], []);
 
-  const openLightbox = useCallback((index) => {
+  const _openLightbox = useCallback((index) => {
     setLightboxIndex(index);
     setSelectedImage(galleryImages[index]);
   }, [galleryImages]);
@@ -1008,7 +1008,7 @@ const Accommodation = () => {
                   }
                 }}
                 className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                onClick={() => openLightbox(index)}
+                onClick={() => _openLightbox(index)}
                 style={{ willChange: 'transform' }}
               >
                 <div className="aspect-square overflow-hidden bg-gray-200">

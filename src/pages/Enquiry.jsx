@@ -3,6 +3,11 @@ import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = 'your_service_id';
+const EMAILJS_PUBLIC_KEY = 'your_public_key';
+const EMAILJS_TEMPLATE_ID_ENQUIRY = 'your_enquiry_template_id';
+
 const Enquiry = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -27,15 +32,16 @@ const Enquiry = () => {
 
     try {
       // EmailJS configuration
-      // To set up EmailJS:
-      // 1. Sign up at https://www.emailjs.com/
-      // 2. Create a service (Gmail, Outlook, etc.)
-      // 3. Create an email template
-      // 4. Get your Service ID, Template ID, and Public Key
-      // 5. Replace the values below
-      const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
-      const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+      const serviceID = EMAILJS_SERVICE_ID;
+      const templateID = EMAILJS_TEMPLATE_ID_ENQUIRY;
+      const publicKey = EMAILJS_PUBLIC_KEY;
+
+      // Check if EmailJS is configured
+      if (!serviceID || serviceID === 'your_service_id' || !templateID || templateID === 'your_enquiry_template_id' || !publicKey || publicKey === 'your_public_key') {
+        alert('Email service is not configured. Please contact us directly at info@melroseapartments.com.au or call 1800 779 971');
+        setIsSubmitting(false);
+        return;
+      }
 
       // Initialize EmailJS
       emailjs.init(publicKey);
@@ -45,9 +51,16 @@ const Enquiry = () => {
         from_name: `${formData.firstName} ${formData.lastName}`,
         from_email: formData.email,
         phone: formData.phone || 'Not provided',
+        subject: 'New Enquiry from Website',
         message: formData.message,
         to_email: 'info@melroseapartments.com.au',
         reply_to: formData.email,
+        form_type: 'Enquiry Form',
+        date: new Date().toLocaleString('en-AU', { 
+          timeZone: 'Australia/Melbourne',
+          dateStyle: 'full',
+          timeStyle: 'short'
+        }),
       };
 
       // Send email via EmailJS
@@ -71,7 +84,9 @@ const Enquiry = () => {
       }, 5000);
     } catch (error) {
       console.error('EmailJS Error:', error);
-      alert('Sorry, there was an error sending your message. Please try again or contact us directly.');
+      alert(
+        `Sorry, there was an error sending your message. Please try again or contact us directly at info@melroseapartments.com.au or call 1800 779 971. Error: ${error.text || error.message || 'Unknown error'}`
+      );
     } finally {
       setIsSubmitting(false);
     }

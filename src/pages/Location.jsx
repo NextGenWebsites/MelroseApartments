@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MapPin, TramFront, Car, Navigation, Train } from 'lucide-react';
+import { MapPin, TramFront, Car, Navigation, Train, Bus } from 'lucide-react';
 import CTAButton from '../components/CTAButton';
 
 // Import image from indoor-images folder
@@ -29,6 +29,11 @@ const Location = () => {
         description: 'Take train Route 59 or Route 57 to Flemington Bridge Station, then a short walk to Melrose Street',
         icon: Train,
       },
+      {
+        title: 'Bus',
+        description: 'Bus service details to be added',
+        icon: Bus,
+      },
     ],
     fromAirport: [
       {
@@ -42,7 +47,7 @@ const Location = () => {
       {
         method: 'By Shuttle',
         description: 'For door to door service call Star Bus on 03 8378 8700 or book online',
-        link: 'https://www.star-bus.com.au/',
+        link: 'https://www.skybus.com.au/',
       },
     ],
   };

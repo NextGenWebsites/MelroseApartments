@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Phone, MapPin, Clock, Send, CheckCircle, AlertCircle, Loader, ChevronDown } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import CTAButton from '../components/CTAButton';
 
 // Import image from indoor-images folder
 import room23 from '../assets/images/indoor-images/Room 23 copy.webp';
+
+// EmailJS Configuration
+const EMAILJS_SERVICE_ID = 'your_service_id';
+const EMAILJS_PUBLIC_KEY = 'your_public_key';
+const EMAILJS_TEMPLATE_ID_CONTACT = 'your_contact_template_id';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +23,7 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', or null
   const [errorMessage, setErrorMessage] = useState('');
+  const [openTerm, setOpenTerm] = useState(null); // Track which term section is open
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,13 +70,13 @@ const Contact = () => {
     setSubmitStatus(null);
     setErrorMessage('');
 
-    // EmailJS configuration - Get from environment variables
-    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    // EmailJS configuration
+    const serviceId = EMAILJS_SERVICE_ID;
+    const templateId = EMAILJS_TEMPLATE_ID_CONTACT;
+    const publicKey = EMAILJS_PUBLIC_KEY;
 
     // Check if EmailJS is configured
-    if (!serviceId || !templateId || !publicKey) {
+    if (!serviceId || serviceId === 'your_service_id' || !templateId || templateId === 'your_contact_template_id' || !publicKey || publicKey === 'your_public_key') {
       setSubmitStatus('error');
       setErrorMessage(
         'Email service is not configured. Please contact us directly at info@melroseapartments.com.au or call 1800 779 971'
@@ -80,20 +86,28 @@ const Contact = () => {
     }
 
     try {
-      await emailjs.send(
-        serviceId,
-        templateId,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          phone: formData.phone || 'Not provided',
-          subject: formData.subject || 'General Inquiry',
-          message: formData.message,
-          to_email: 'info@melroseapartments.com.au',
-          reply_to: formData.email,
-        },
-        publicKey
-      );
+      // Initialize EmailJS
+      emailjs.init(publicKey);
+
+      // Prepare template parameters
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone || 'Not provided',
+        subject: formData.subject || 'General Inquiry',
+        message: formData.message,
+        to_email: 'info@melroseapartments.com.au',
+        reply_to: formData.email,
+        form_type: 'Contact Form',
+        date: new Date().toLocaleString('en-AU', { 
+          timeZone: 'Australia/Melbourne',
+          dateStyle: 'full',
+          timeStyle: 'short'
+        }),
+      };
+
+      // Send email via EmailJS
+      await emailjs.send(serviceId, templateId, templateParams);
 
       setSubmitStatus('success');
       setFormData({
@@ -251,7 +265,7 @@ const Contact = () => {
                   Email Our Team
                 </h2>
                 <div className="mb-8">
-                  <p className="text-gray-700 mb-2 font-semibold">General Inquiries</p>
+                  <p className="text-gray-700 mb-2  ">General Inquiries</p>
                   <p className="text-gray-700">
                     <a
                       href="mailto:info@melroseapartments.com.au"
@@ -296,7 +310,7 @@ const Contact = () => {
                     {/* Name and Email Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="name" className="block text-sm   text-gray-700 mb-2">
                           Name <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -311,7 +325,7 @@ const Contact = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="email" className="block text-sm   text-gray-700 mb-2">
                           Email <span className="text-red-500">*</span>
                         </label>
                         <input
@@ -330,7 +344,7 @@ const Contact = () => {
                     {/* Phone and Subject Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="phone" className="block text-sm   text-gray-700 mb-2">
                           Phone
                         </label>
                         <input
@@ -344,7 +358,7 @@ const Contact = () => {
                         />
                       </div>
                       <div>
-                        <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label htmlFor="subject" className="block text-sm   text-gray-700 mb-2">
                           Subject
                         </label>
                         <input
@@ -361,7 +375,7 @@ const Contact = () => {
 
                     {/* Message */}
                     <div>
-                      <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label htmlFor="message" className="block text-sm   text-gray-700 mb-2">
                         Message <span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -385,7 +399,7 @@ const Contact = () => {
                       >
                         <CheckCircle className="flex-shrink-0 mt-0.5" size={20} />
                         <div>
-                          <p className="font-semibold">Message sent successfully!</p>
+                          <p className=" ">Message sent successfully!</p>
                           <p className="text-sm mt-1">
                             We've received your message and will get back to you as soon as possible.
                           </p>
@@ -401,7 +415,7 @@ const Contact = () => {
                       >
                         <AlertCircle className="flex-shrink-0 mt-0.5" size={20} />
                         <div>
-                          <p className="font-semibold">Failed to send message</p>
+                          <p className=" ">Failed to send message</p>
                           <p className="text-sm mt-1">
                             {errorMessage || 'Please try again or contact us directly at info@melroseapartments.com.au'}
                           </p>
@@ -414,7 +428,7 @@ const Contact = () => {
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full md:w-auto px-8 py-4 bg-[#36b3a8] text-white font-semibold uppercase tracking-wide rounded-lg hover:bg-[#2a9d94] transition-all duration-300 flex items-center justify-center gap-2 ${
+                        className={`w-full md:w-auto px-8 py-4 bg-[#36b3a8] text-white   uppercase tracking-wide rounded-lg hover:bg-[#2a9d94] transition-all duration-300 flex items-center justify-center gap-2 ${
                           isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-lg hover:-translate-y-0.5'
                         }`}
                       >
@@ -478,7 +492,7 @@ const Contact = () => {
                     href="https://www.thebookingbutton.com.au/properties/melrosedirect"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#36b3a8] hover:underline font-semibold"
+                    className="text-[#36b3a8] hover:underline  "
                   >
                     www.apartmentsonmelrose.com.au
                   </a>
@@ -496,7 +510,7 @@ const Contact = () => {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="bg-gray-50 p-6 rounded-lg"
               >
-                  <h3 className="text-2xl  mb-4 uppercase" style={{ color: '#36b3a8' }}>
+                <h3 className="text-2xl  mb-4 uppercase" style={{ color: '#36b3a8' }}>
                   Check-In Times
                 </h3>
                 <p className="text-gray-700 mb-2">
@@ -508,6 +522,322 @@ const Contact = () => {
                 </p>
               </motion.div>
             </div>
+
+            {/* Terms and Conditions Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mt-12"
+            >
+              <h2 className="text-3xl  mb-6 uppercase" style={{ color: '#36b3a8' }}>
+                Terms and Conditions
+              </h2>
+              <div className="space-y-4">
+                {/* Booking Terms */}
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenTerm(openTerm === 'booking' ? null : 'booking')}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-xl  text-gray-800">Booking Terms and Conditions</h3>
+                    <motion.div
+                      animate={{ rotate: openTerm === 'booking' ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <ChevronDown className={openTerm === 'booking' ? "text-[#36b3a8] shrink-0" : "text-gray-400 shrink-0"} size={24} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence>
+                    {openTerm === 'booking' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1]
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 py-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+                        <div className="text-gray-700 space-y-4 text-sm leading-relaxed">
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">1. Reservations</h4>
+                            <p>All reservations are subject to availability and confirmation. A valid credit card is required to secure your booking. By making a reservation, you agree to these terms and conditions.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">2. Payment</h4>
+                            <p>Payment is required at the time of booking unless otherwise specified. We accept major credit cards and debit cards. All prices are in Australian Dollars (AUD) and include GST where applicable.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">3. Cancellation Policy</h4>
+                            <p>Cancellations made more than 48 hours before check-in will receive a full refund minus a processing fee. Cancellations made within 48 hours of check-in are non-refundable. No-shows will be charged the full amount of the reservation.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">4. Modifications</h4>
+                            <p>Changes to reservations are subject to availability and may incur additional charges. Modifications must be made at least 48 hours before the scheduled check-in date.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">5. Group Bookings</h4>
+                            <p>Special terms and conditions apply to group bookings of 5 or more rooms. Please contact us directly for group booking arrangements and pricing.</p>
+                          </div>
+                        </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Check-In/Check-Out Terms */}
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenTerm(openTerm === 'checkin' ? null : 'checkin')}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-xl  text-gray-800">Check-In and Check-Out Policy</h3>
+                    <motion.div
+                      animate={{ rotate: openTerm === 'checkin' ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <ChevronDown className={openTerm === 'checkin' ? "text-[#36b3a8] shrink-0" : "text-gray-400 shrink-0"} size={24} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence>
+                    {openTerm === 'checkin' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1]
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 py-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+                        <div className="text-gray-700 space-y-4 text-sm leading-relaxed">
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Check-In</h4>
+                            <p>Standard check-in time is from 3:00 PM. Early check-in may be available upon request and is subject to room availability. Guests must present valid photo identification and the credit card used for booking upon check-in.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Check-Out</h4>
+                            <p>Check-out time is 10:00 AM. Late check-out may be arranged for an additional fee, subject to availability. Guests are responsible for any damage to the property or its contents during their stay.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">After-Hours Check-In</h4>
+                            <p>For check-in outside of office hours, please contact us in advance to make arrangements. Self-check-in procedures will be provided for guests arriving after hours.</p>
+                          </div>
+                        </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Guest Responsibilities */}
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenTerm(openTerm === 'responsibilities' ? null : 'responsibilities')}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-xl  text-gray-800">Guest Responsibilities</h3>
+                    <motion.div
+                      animate={{ rotate: openTerm === 'responsibilities' ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <ChevronDown className={openTerm === 'responsibilities' ? "text-[#36b3a8] shrink-0" : "text-gray-400 shrink-0"} size={24} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence>
+                    {openTerm === 'responsibilities' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1]
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 py-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+                        <div className="text-gray-700 space-y-4 text-sm leading-relaxed">
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Property Care</h4>
+                            <p>Guests are expected to treat the property and its contents with respect. Any damage, loss, or excessive cleaning required will result in additional charges. Smoking is strictly prohibited inside all apartments.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Noise and Conduct</h4>
+                            <p>Guests must respect other residents and maintain reasonable noise levels, especially between 10:00 PM and 7:00 AM. Disruptive behavior may result in immediate eviction without refund.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Occupancy</h4>
+                            <p>The maximum number of guests per apartment is as specified in your booking. Additional guests are not permitted without prior approval and may incur extra charges.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Pets</h4>
+                            <p>Pets are not permitted unless specifically approved in advance. A pet fee may apply, and guests are responsible for any damage caused by pets.</p>
+                          </div>
+                        </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Liability and Insurance */}
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenTerm(openTerm === 'liability' ? null : 'liability')}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-xl   text-gray-800">Liability and Insurance</h3>
+                    <motion.div
+                      animate={{ rotate: openTerm === 'liability' ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <ChevronDown className={openTerm === 'liability' ? "text-[#36b3a8] shrink-0" : "text-gray-400 shrink-0"} size={24} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence>
+                    {openTerm === 'liability' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1]
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 py-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+                        <div className="text-gray-700 space-y-4 text-sm leading-relaxed">
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Limitation of Liability</h4>
+                            <p>Melrose Apartments is not liable for any loss, damage, or injury to guests or their property during their stay. Guests are responsible for their personal belongings and are encouraged to secure travel insurance.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Force Majeure</h4>
+                            <p>We are not liable for any failure to perform our obligations due to circumstances beyond our reasonable control, including natural disasters, pandemics, government restrictions, or other force majeure events.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Personal Property</h4>
+                            <p>Guests are advised to keep valuables secure. We recommend using the in-room safe where available. Melrose Apartments is not responsible for lost, stolen, or damaged personal property.</p>
+                          </div>
+                        </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Privacy and Data Protection */}
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenTerm(openTerm === 'privacy' ? null : 'privacy')}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-xl   text-gray-800">Privacy and Data Protection</h3>
+                    <motion.div
+                      animate={{ rotate: openTerm === 'privacy' ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <ChevronDown className={openTerm === 'privacy' ? "text-[#36b3a8] shrink-0" : "text-gray-400 shrink-0"} size={24} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence>
+                    {openTerm === 'privacy' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1]
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 py-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+                        <div className="text-gray-700 space-y-4 text-sm leading-relaxed">
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Data Collection</h4>
+                            <p>We collect personal information necessary to process your booking and provide our services. This includes name, contact details, payment information, and identification documents as required by law.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Data Usage</h4>
+                            <p>Your personal information is used solely for booking purposes, communication, and compliance with legal requirements. We do not sell or share your data with third parties except as required by law or for essential service provision.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Data Security</h4>
+                            <p>We implement appropriate security measures to protect your personal information. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Your Rights</h4>
+                            <p>You have the right to access, correct, or delete your personal information. To exercise these rights, please contact us at info@melroseapartments.com.au.</p>
+                          </div>
+                        </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* General Terms */}
+                <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => setOpenTerm(openTerm === 'general' ? null : 'general')}
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-xl   text-gray-800">General Terms</h3>
+                    <motion.div
+                      animate={{ rotate: openTerm === 'general' ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                    >
+                      <ChevronDown className={openTerm === 'general' ? "text-[#36b3a8] shrink-0" : "text-gray-400 shrink-0"} size={24} />
+                    </motion.div>
+                  </button>
+                  <AnimatePresence>
+                    {openTerm === 'general' && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ 
+                          duration: 0.4,
+                          ease: [0.4, 0, 0.2, 1]
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 py-4 border-t border-gray-200 max-h-96 overflow-y-auto">
+                        <div className="text-gray-700 space-y-4 text-sm leading-relaxed">
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Governing Law</h4>
+                            <p>These terms and conditions are governed by the laws of Victoria, Australia. Any disputes will be subject to the exclusive jurisdiction of the courts of Victoria.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Changes to Terms</h4>
+                            <p>We reserve the right to modify these terms and conditions at any time. Changes will be effective immediately upon posting. Continued use of our services constitutes acceptance of the modified terms.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Contact Information</h4>
+                            <p>For questions about these terms and conditions, please contact us at info@melroseapartments.com.au or call 1800 779 971 during office hours.</p>
+                          </div>
+                          <div>
+                            <h4 className="  text-gray-900 mb-2">Severability</h4>
+                            <p>If any provision of these terms is found to be invalid or unenforceable, the remaining provisions will continue in full force and effect.</p>
+                          </div>
+                        </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
