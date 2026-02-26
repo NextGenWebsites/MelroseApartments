@@ -8,9 +8,9 @@ import CTAButton from '../components/CTAButton';
 import room23 from '../assets/images/indoor-images/Room 23 copy.webp';
 
 // EmailJS Configuration
-const EMAILJS_SERVICE_ID = 'your_service_id';
-const EMAILJS_PUBLIC_KEY = 'your_public_key';
-const EMAILJS_TEMPLATE_ID_CONTACT = 'your_contact_template_id';
+const EMAILJS_SERVICE_ID = 'service_slqc5wh';
+const EMAILJS_PUBLIC_KEY = 'wVUMD52dYJzA86_gy';
+const EMAILJS_TEMPLATE_ID_CONTACT = 'template_4e3pu5c';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
