@@ -16,12 +16,12 @@ const Location = () => {
     publicTransport: [
       {
         title: 'Tram Route 57',
-        description: 'Leaves from William Street in the CBD, get off at stop 19, Royal Children\'s Hospital',
+        description: 'Leaves from William Street in the CBD, get off at Stop 20 (Melrose Street)',
         icon: TramFront,
       },
       {
         title: 'Tram Route 59',
-        description: 'Leaves from Elizabeth Street in the CBD, get off at stop 19, Royal Children\'s Hospital',
+        description: 'Leaves from Elizabeth Street in the CBD, get off at Stop 20 (Melrose Street)',
         icon: TramFront,
       },
       {
@@ -31,7 +31,7 @@ const Location = () => {
       },
       {
         title: 'Bus',
-        description: 'Bus service details to be added',
+        description: 'Bus 402 – stop off at Melrose St/Canning St, then a 3 minute walk to the property',
         icon: Bus,
       },
     ],
@@ -61,7 +61,7 @@ const Location = () => {
     {
       icon: Car,
       title: 'Easy Parking',
-      description: 'Secure parking available',
+      description: 'Secure Free Street Parking Available',
     },
     {
       icon: MapPin,

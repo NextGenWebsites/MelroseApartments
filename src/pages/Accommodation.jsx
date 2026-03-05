@@ -35,6 +35,10 @@ import room34_2 from '../assets/images/indoor-images/Room34-2_converted.webp';
 import room34_3 from '../assets/images/indoor-images/Room34-3_converted.webp';
 import room34_4 from '../assets/images/indoor-images/Room34-4_converted.webp';
 import room34_5 from '../assets/images/indoor-images/Room34-5_converted.webp';
+// Former home slideshow photos – shown under Interconnecting Apartment
+import homeSlide1 from '../assets/images/homepage-iamges/img1.jpg';
+import homeSlide2 from '../assets/images/homepage-iamges/img2.jpg';
+import homeSlide3 from '../assets/images/homepage-iamges/img3.jpg';
 
 const Accommodation = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState({ 1: 0, 2: 0 });
@@ -543,7 +547,7 @@ const Accommodation = () => {
                           src={room.images[currentImageIndex[room.id]]}
                           alt={`${room.name} - Modern studio accommodation in North Melbourne with fully equipped kitchen, queen bed, and all amenities`}
                           title={`${room.name} - Melrose Apartments North Melbourne`}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain bg-gray-100"
                           initial={{ opacity: 0, scale: 1.05 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
@@ -922,6 +926,12 @@ const Accommodation = () => {
                   <h3 className="text-white text-xl font-semibold mb-1">Interconnecting Apartment</h3>
                   <p className="text-white/90 text-sm">Perfect for 3-4 guests</p>
                 </div>
+              </div>
+              {/* Interconnecting Apartment – additional photos (former home slideshow) */}
+              <div className="grid grid-cols-3 gap-2 mt-4 max-w-[400px] mx-auto">
+                <img src={homeSlide1} alt="Interconnecting apartment view 1 - Melrose Apartments North Melbourne" className="w-full aspect-[4/3] object-cover rounded-lg shadow-md" />
+                <img src={homeSlide2} alt="Interconnecting apartment view 2 - Melrose Apartments North Melbourne" className="w-full aspect-[4/3] object-cover rounded-lg shadow-md" />
+                <img src={homeSlide3} alt="Interconnecting apartment view 3 - Melrose Apartments North Melbourne" className="w-full aspect-[4/3] object-cover rounded-lg shadow-md" />
               </div>
             </motion.div>
           </motion.div>
