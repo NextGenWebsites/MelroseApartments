@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { TramFront, Car, ExternalLink, Check } from "lucide-react";
 import CTAButton from "../components/CTAButton";
 
